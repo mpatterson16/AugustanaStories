@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getBaseContext(), StoryActivity.class);
+                intent.putExtra(StoryActivity.URL_EXTRA, "Story1.html");
                 startActivity(intent);
             }
         });

@@ -1,8 +1,10 @@
 package net.augustana.maegan.augustanastories;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -19,7 +21,9 @@ import android.location.LocationListener;
 import android.location.Location;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -50,8 +54,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LatLng sorenson = new LatLng(41.505237, -90.547219);
-        Marker sorensonMarker = mMap.addMarker(new MarkerOptions().position(sorenson).title("Sorenson"));
+        final StoryCollection collection = StoryCollection.getDefaultStoryCollection();
+        for(StoryLocation story : collection.getStoryList()) {
+            LatLng loc = new LatLng(story.getLat(), story.getLng());
+            Marker marker = mMap.addMarker(new MarkerOptions().position(loc).title(story.getName()));
+        }
 
 
         if (!enableMyLocation()) {
@@ -60,12 +67,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     MY_PERMISSIONS_REQUEST_READ_LOCATION);
         }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sorenson));
+        StoryLocation oldMain = collection.getStoryByName("Old Main");
+        LatLng oldMainLoc = new LatLng(oldMain.getLat(), oldMain.getLng());
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(oldMainLoc));
+        mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
-                Toast.makeText(MapsActivity.this, marker.getTitle(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(MapsActivity.this, marker.getTitle() + "\nhttp://lovelace.augustana.edu/AugustanaStories/" + marker.getTitle().toLowerCase() +
+                //        ".html", Toast.LENGTH_LONG).show();
+               // AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+                //builder.setMessage("http://lovelace.augustana.edu/AugustanaStories/" + marker.getTitle().toLowerCase() + ".html").setTitle(marker.getTitle());
+                //AlertDialog dialog = builder.create();
+                //dialog.show();
+
+                StoryLocation storyLoc = collection.getStoryByName(marker.getTitle());
+                Intent intent = new Intent(getBaseContext(), StoryActivity.class);
+                intent.putExtra(StoryActivity.URL_EXTRA, storyLoc.getUrl());
+
+                startActivity(intent);
             }
         });
     }
