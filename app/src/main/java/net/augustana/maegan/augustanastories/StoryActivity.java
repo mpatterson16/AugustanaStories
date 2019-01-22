@@ -13,6 +13,7 @@ import android.webkit.WebViewClient;
 
 public class StoryActivity extends AppCompatActivity {
     public static final String URL_EXTRA = "url";
+    WebView webViewStory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,8 +24,12 @@ public class StoryActivity extends AppCompatActivity {
 
         Intent startIntent = this.getIntent();
         String url = startIntent.getStringExtra(URL_EXTRA);
-        WebView webViewStory = (WebView) findViewById(R.id.webViewStory);
-        webViewStory.loadUrl("http://lovelace.augustana.edu/AugustanaStories/" + url);
+        webViewStory = (WebView) findViewById(R.id.webViewStory);
+        webViewStory.getSettings().setBuiltInZoomControls(true);
+        webViewStory.getSettings().setDisplayZoomControls(false);
+
+        //webViewStory.clearCache(true);
+        webViewStory.loadUrl("https://lovelace.augustana.edu/AugustanaStories/" + url);
 
         //https://stackoverflow.com/questions/7308904/link-should-be-open-in-same-web-view-in-android
         webViewStory.setWebViewClient(new WebViewClient() {
@@ -35,6 +40,15 @@ public class StoryActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (webViewStory.canGoBack()) {
+            webViewStory.goBack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
 
