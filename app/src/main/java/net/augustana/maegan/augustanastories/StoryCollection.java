@@ -1,18 +1,39 @@
 package net.augustana.maegan.augustanastories;
 
-import com.google.android.gms.maps.model.LatLng;
+import android.annotation.TargetApi;
+import android.os.AsyncTask;
+import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.xml.transform.Result;
+
 public class StoryCollection {
     // Singleton pattern
     private static StoryCollection defaultStoryCollection;
-    public static StoryCollection getDefaultStoryCollection() {
+    public static StoryCollection getDefaultStoryCollection(String locations) {
         if (defaultStoryCollection == null) {
-            defaultStoryCollection = new StoryCollection();
+            Log.d("myTag", "1");
+            defaultStoryCollection = new StoryCollection(locations);
         }
         return defaultStoryCollection;
     }
@@ -20,8 +41,17 @@ public class StoryCollection {
 
     private Map<String,StoryLocation> stories = new TreeMap<>();
 
-    private StoryCollection() {
-        StoryLocation[] storyLocationArray = new StoryLocation[] {
+    private StoryCollection(String locations) {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.setDateFormat("M/d/yy hh:mm a");
+        Gson gson = gsonBuilder.create();
+        StoryLocation[] storyLocationArray = gson.fromJson(locations, StoryLocation[].class);
+        for(StoryLocation storyLocation : storyLocationArray) {
+            stories.put(storyLocation.getName(), storyLocation);
+        }
+
+
+        /*StoryLocation[] storyLocationArray = new StoryLocation[] {
 //                LatLng sorenson = new LatLng(41.505237, -90.547219);
 //        LatLng centennial = new LatLng(41.505229, -90.548837);
 //        LatLng denkmann = new LatLng(41.504644, -90.550507);
@@ -40,12 +70,13 @@ public class StoryCollection {
                 new StoryLocation("Bell Tower", "belltower.html", 41.503913, -90.549269),
                 new StoryLocation("Brunner", "brunner.html", 41.504438, -90.548292),
                 new StoryLocation("House on the Hill", "houseonthehill.html", 41.501221, -90.555062)
-        };
+        };*/
         // convert the current object to JSON, and dump the text to the log
+        //Gson gson = new Gson();
+        //String json = gson.toJson(storyLocationArray);
 
-        for (StoryLocation storyLocation : storyLocationArray) {
-            stories.put(storyLocation.getName(), storyLocation);
-        }
+
+
     }
 
     public StoryLocation getStoryByName(String name) {

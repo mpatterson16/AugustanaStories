@@ -24,6 +24,7 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.widget.Toast;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -54,7 +55,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        final StoryCollection collection = StoryCollection.getDefaultStoryCollection();
+        Intent startIntent = this.getIntent();
+        String locations = startIntent.getStringExtra("locations");
+        Log.d("myTag", locations);
+
+        final StoryCollection collection = StoryCollection.getDefaultStoryCollection(locations);
         for(StoryLocation story : collection.getStoryList()) {
             LatLng loc = new LatLng(story.getLat(), story.getLng());
             Marker marker = mMap.addMarker(new MarkerOptions().position(loc).title(story.getName()));
