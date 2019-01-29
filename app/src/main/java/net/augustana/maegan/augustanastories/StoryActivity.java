@@ -27,6 +27,7 @@ public class StoryActivity extends AppCompatActivity {
         webViewStory = (WebView) findViewById(R.id.webViewStory);
         webViewStory.getSettings().setBuiltInZoomControls(true);
         webViewStory.getSettings().setDisplayZoomControls(false);
+        setTitle("Augustana Stories");
 
         //webViewStory.clearCache(true);
         webViewStory.loadUrl("https://lovelace.augustana.edu/AugustanaStories/" + url);

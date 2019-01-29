@@ -57,7 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent startIntent = this.getIntent();
         String locations = startIntent.getStringExtra("locations");
-        Log.d("myTag", locations);
+        Log.d("myTag", "loc" + locations);
 
         final StoryCollection collection = StoryCollection.getDefaultStoryCollection(locations);
         for(StoryLocation story : collection.getStoryList()) {
@@ -74,8 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         StoryLocation oldMain = collection.getStoryByName("Old Main");
         LatLng oldMainLoc = new LatLng(oldMain.getLat(), oldMain.getLng());
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(oldMainLoc));
-        mMap.moveCamera(CameraUpdateFactory.zoomTo(17));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oldMainLoc, 17));
 
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
