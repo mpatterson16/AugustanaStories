@@ -21,6 +21,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -39,7 +40,7 @@ public class StoryCollection {
     }
 
 
-    private Map<String,StoryLocation> stories = new TreeMap<>();
+    private Map<String,StoryLocation> stories = new HashMap<>();//tree
 
     private StoryCollection(String locations) {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -49,6 +50,7 @@ public class StoryCollection {
         for(StoryLocation storyLocation : storyLocationArray) {
             stories.put(storyLocation.getName(), storyLocation);
         }
+        Log.d("myTag", stories.toString());
 
 
         /*StoryLocation[] storyLocationArray = new StoryLocation[] {

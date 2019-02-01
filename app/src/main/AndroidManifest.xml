@@ -21,7 +21,8 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:configChanges="orientation|screenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,11 +43,13 @@
 
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" />
+            android:label="@string/title_activity_maps"
+            android:configChanges="orientation|screenSize"/>
         <activity
             android:name=".StoryActivity"
             android:label="@string/title_activity_story"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".AboutActivity"></activity>
     </application>
 

@@ -25,12 +25,21 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int MY_PERMISSIONS_REQUEST_READ_LOCATION = 1;
     private GoogleMap mMap;
+    private Button nextButton;
+    private Button previousButton;
+    private Marker currentMarker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        currentMarker = null;
     }
 
 
@@ -59,10 +69,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String locations = startIntent.getStringExtra("locations");
         Log.d("myTag", "loc" + locations);
 
+        final ArrayList<Marker> markers = new ArrayList<>();
+
         final StoryCollection collection = StoryCollection.getDefaultStoryCollection(locations);
+
+        int i = 1;
         for(StoryLocation story : collection.getStoryList()) {
             LatLng loc = new LatLng(story.getLat(), story.getLng());
-            Marker marker = mMap.addMarker(new MarkerOptions().position(loc).title(story.getName()));
+            Marker marker = mMap.addMarker(new MarkerOptions().position(loc).title(i + ". " + story.getName()));
+            markers.add(marker);
+            i++;
         }
 
 
@@ -76,6 +92,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng oldMainLoc = new LatLng(oldMain.getLat(), oldMain.getLng());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(oldMainLoc, 17));
 
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                currentMarker = marker;
+                return false;
+            }
+        });
+
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
@@ -85,12 +109,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //builder.setMessage("http://lovelace.augustana.edu/AugustanaStories/" + marker.getTitle().toLowerCase() + ".html").setTitle(marker.getTitle());
                 //AlertDialog dialog = builder.create();
                 //dialog.show();
+                int space = marker.getTitle().indexOf(" ");
+                String title = marker.getTitle().substring(space + 1);
 
-                StoryLocation storyLoc = collection.getStoryByName(marker.getTitle());
+                StoryLocation storyLoc = collection.getStoryByName(title);
                 Intent intent = new Intent(getBaseContext(), StoryActivity.class);
                 intent.putExtra(StoryActivity.URL_EXTRA, storyLoc.getUrl());
 
                 startActivity(intent);
+            }
+        });
+
+        nextButton = (Button) findViewById(R.id.nextButton);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentMarker == null || currentMarker.equals(markers.get(markers.size() - 1))) {
+                    currentMarker = markers.get(0);
+                } else {
+                    currentMarker = markers.get(markers.indexOf(currentMarker) + 1);
+                }
+                currentMarker.showInfoWindow();
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(currentMarker.getPosition()), 500, null);
+            }
+        });
+
+        previousButton = (Button) findViewById(R.id.previousButton);
+        previousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(currentMarker == null || currentMarker.equals(markers.get(0))) {
+                    currentMarker = markers.get(markers.size() - 1);
+                } else {
+                    currentMarker = markers.get(markers.indexOf(currentMarker) - 1);
+                }
+                currentMarker.showInfoWindow();
+                mMap.animateCamera(CameraUpdateFactory.newLatLng(currentMarker.getPosition()), 500, null);
             }
         });
     }
