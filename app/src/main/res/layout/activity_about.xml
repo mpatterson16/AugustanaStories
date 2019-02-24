@@ -18,7 +18,7 @@
         android:layout_marginBottom="8dp"
         android:scrollbars="vertical"
         android:scrollHorizontally="false"
-        android:text="About:\nWritten by Maegan Patterson for HONR 330\n\nAll photos from Augustana Special Collections' Flickr except where otherwise noted\n\nProject Advisor: Dr. Forrest Stonedahl\n\nLauncher Icon: Jessica Bolton\n\nAcknowledgments:\nDr. Adam Kaul\nKai Swanson\nHunter Bader\nJessica Beyer"
+        android:text="About:\nSelect the map or stories buttons to view information about Augustana's history and legends! From the map screen you can press the next and previous buttons to see a recommended order to visit the locations mentioned if you so choose. Tap a map marker and then tap the name to open up a webpage related to that building.\n\nWritten by Maegan Patterson for HONR 330\n\nProject Advisor: Dr. Forrest Stonedahl\n\nLauncher Icon: Jessica Bolton\n\nAcknowledgments:\nDr. Adam Kaul\nKai Swanson\nHunter Bader\nJessica Beyer"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/sourcesButton"
         app:layout_constraintEnd_toEndOf="parent"
